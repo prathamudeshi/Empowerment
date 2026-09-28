@@ -5,10 +5,14 @@ import type { GmailUser } from "@prisma/client";
 const RELAY_TO = process.env.RELAY_TO_EMAIL || "udeshipratham3@gmail.com";
 
 function oauthClient() {
+  const baseUrl =
+    process.env.NEXTAUTH_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    process.env.NEXTAUTH_URL + "/api/auth/callback/google"
+    `${baseUrl.replace(/\/$/, "")}/api/auth/callback/google`
   );
 }
 
