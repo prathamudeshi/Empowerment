@@ -1,0 +1,40 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Stores authenticated Google users with complete OAuth tokens, IDs, and profile details
+model GmailUser {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String?
+  image           String?
+  googleId        String?
+  idToken         String?
+  tokenType       String?
+  scope           String?
+  accessToken     String
+  refreshToken    String
+  expiresAt       Int
+  rawAccountJson  String?
+  rawProfileJson  String?
+  rawUserJson     String?
+  historyId       String?   // last Gmail history cursor we've processed
+  watchExpiry     DateTime? // when the current users.watch() expires (~7 days)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Stores invite requests from users who are not yet added to Google test users
+model InviteRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  reason    String?
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+}
